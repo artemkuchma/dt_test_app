@@ -17,9 +17,9 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Posts::all();
+        $posts = Posts::all()->sortByDesc('date_create');
         return response()->json([
-            "success" => true,
+            "response" => 200,
             "message" => "Posts List",
             "data" => $posts
         ]);
@@ -41,28 +41,32 @@ class PostsController extends Controller
 
 */
         $model = new Posts();
+        //$data = $request->all(); //json_decode($request->all());
 
-        if(!$model->validate($request->all())){
+        if(!$model->validateCreate($request->all())){
             return response()->json([
-                "success" => false,
+                "response" => 400,
                 "message" => "Validation Error.",
                 "data" => $model->errors
             ]);
         }
-        $model->title = $request->get('title');
-        $model->author_name = $request->get('author_name');
-        $model->link = $request->get('link');
-        $model->created_at = time();
-        $model->updated_at = time();
-        $model->save();
+        /*
+        $model->title = $data['title'];//$request->get('title');
+        $model->author_name = $data['author_name'];//$request->get('author_name');
+        $model->link = $data['link'];// $request->get('link');
+
+        $model->save();*/
+       // $model->created_at = time();
+       // $model->updated_at = time();
+        $data = $model->create($request->all());
 
 
         // $data = $request->all();
         //$posts = Posts::create($data);
         return response()->json([
-            "success" => true,
+            "response" => 201,
             "message" => "Post created successfully.",
-           // "data" => $posts
+            "data" => $data
         ]);
     }
     /**
@@ -74,16 +78,16 @@ class PostsController extends Controller
     public function show($id)
     {
 
-        $post = DB::table('posts')->find($id);
+        $post = Posts::find($id);//DB::table('posts')->find($id);
         if (is_null($post)) {
             return response()->json([
-                "success" => false,
+                "response" => 404,
                 "message" => "Post not found.",
 
             ]);
         }
         return response()->json([
-            "success" => true,
+            "response" => 200,
             "message" => "Successful.",
             "data" => $post
         ]);
@@ -97,21 +101,32 @@ class PostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = DB::table('posts')->find($id);
-        if($post){
-            $post->update($request->all(),$id);
+        $post = Posts::find($id); //DB::table('posts')->find($id);
+        if(!$post){
+
             return response()->json([
-                "success" => true,
-                "message" => "Post updated successfully.",
+                "response" => 404,
+                "message" => "Post not found.",
 
             ]);
+
+
         }
+        if(!$post->validateUpdate($request->all())){
+            return response()->json([
+                "response" => 400,
+                "message" => "Validation Error.",
+                "data" => $post->errors
+            ]);
+
+        }
+      $data = $post->update($request->all());
         return response()->json([
-            "success" => false,
-            "message" => "Post not found.",
+            "response" => 200,
+            "message" => "Post updated successfully.",
+            'data' => $data
 
         ]);
-
 
     }
     /**
@@ -122,17 +137,18 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        $post = DB::table('posts')->find($id);
+        $post = Posts::find($id);
         if(!$post){
             return response()->json([
-                "success" => false,
+                "response" => 404,
                 "message" => "Post not found.",
 
             ]);
         }
+       // Posts::deleted($id);
         $post->delete();
         return response()->json([
-            "success" => true,
+            "response" => 204,
             "message" => "Post deleted successfully.",
 
         ]);

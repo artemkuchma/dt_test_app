@@ -16,31 +16,74 @@ class Posts extends Model
         'title',
         'author_name',
         'link',
-        'created_at',
-        'updated_at',
+        'date_create'
+       // 'created_at',
+      //  'updated_at',
     ];
 
-    protected $rules = array(
-        'title'=> 'required|min:5',
-        'author_name' => 'required',
-        'link' => 'required'
-    );
+    protected $rules_update = [
+        'title'=> 'min:5v',
+        'author_name' => 'min:2|string',
+        'link' => 'string',
+        'date_create' => 'date_format:"Y-m-d"'
+    ];
 
-    public function validate($inputs) {
-        $v = Validator::make($inputs, $this->rules);
+    protected $rules_create = [
+        'title'=> 'required|min:5|string',
+        'author_name' => 'required|min:2|string',
+        'link' => 'required|string',
+        'date_create' => 'required|date_format:"Y-m-d"'
+    ];
+
+    protected function validate($inputs, $rules) {
+        $v = Validator::make($inputs, $rules);
         if($v->passes()) return true;
         $this->errors = $v->messages();
         return false;
     }
 
+    public function validateCreate($inputs) {
+
+        return $this->validate($inputs, $this->rules_create);
+    }
+
+    public function validateUpdate($inputs) {
+
+        return $this->validate($inputs, $this->rules_update);
+
+    }
+
+
+
+/*
+    public function validateCreate($inputs) {
+        $v = Validator::make($inputs, $this->rules_create);
+        if($v->passes()) return true;
+        $this->errors = $v->messages();
+        return false;
+    }
+
+    public function validateUpdate($inputs) {
+        $v = Validator::make($inputs, $this->rules_update);
+        if($v->passes()) return true;
+        $this->errors = $v->messages();
+        return false;
+    }
+
+*/
 
 
 
 
 
 
-    public function create(Request $request)
+/*
+    public function create(Posts $model, $data)
     {
+
+
+
+
         $request->  validate([
             'first_name'=>'required',
             'last_name'=>'required',
@@ -57,5 +100,5 @@ class Posts extends Model
         ]);
         $contact->save();
         return redirect('/contacts')->with('success', 'Contact saved!');
-    }
+    }*/
 }

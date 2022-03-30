@@ -19,6 +19,7 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->string('author_name');
             $table->string('link');
+            $table->date('date_create');
 
         });
     }
