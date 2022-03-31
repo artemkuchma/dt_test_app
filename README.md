@@ -11,4 +11,23 @@
 
 
 <h3>Installation</h3>
-<p></p>
+<p> 1) Download repository.</p>
+
+   <p>2) run the install via composer</p>
+   <code>composer instal</code>
+
+   <p>3) Create a database</p>
+
+   <p>4) Open the .env.example file and write the name of the database and user</p>
+
+   <code>DB_CONNECTION=mysql
+         DB_HOST=127.0.0.1
+         DB_PORT=3306
+         DB_DATABASE=laravel
+         DB_USERNAME=root
+         DB_PASSWORD=
+    </code>
+
+   <p> 5) Rename file .env.example to .env</p>
+   <p> 6) Run in the console (located in the project folder) the migration of database tables with the following command:</p>
+   <code>php artisan migrate</code>
