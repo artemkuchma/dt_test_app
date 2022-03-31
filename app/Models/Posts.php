@@ -11,7 +11,11 @@ use Illuminate\Support\Facades\Validator;
 class Posts extends Model
 {
     use HasFactory;
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'title',
         'author_name',
@@ -19,6 +23,11 @@ class Posts extends Model
         'date_create'
     ];
 
+    /**
+     * Post update validation rules.
+     *
+     * @var array<int, string>
+     */
     protected $rules_update = [
         'title'=> 'min:5v',
         'author_name' => 'min:2|string',
@@ -26,6 +35,11 @@ class Posts extends Model
         'date_create' => 'date_format:"Y-m-d"'
     ];
 
+    /**
+     * Post create validation rules.
+     *
+     * @var array<int, string>
+     */
     protected $rules_create = [
         'title'=> 'required|min:5|string',
         'author_name' => 'required|min:2|string',
@@ -33,6 +47,13 @@ class Posts extends Model
         'date_create' => 'required|date_format:"Y-m-d"'
     ];
 
+    /**
+     * General validation function.
+     *
+     * @param  array $rules
+     * @param  object $inputs
+     * @return bool
+     */
     protected function validate($inputs, $rules) {
         $v = Validator::make($inputs, $rules);
         if($v->passes()) return true;
@@ -40,11 +61,23 @@ class Posts extends Model
         return false;
     }
 
+    /**
+     * Validation post create function.
+     *
+     * @param  object $inputs
+     * @return bool
+     */
     public function validateCreate($inputs) {
 
         return $this->validate($inputs, $this->rules_create);
     }
 
+    /**
+     * Validation post update function.
+     *
+     * @param  object $inputs
+     * @return bool
+     */
     public function validateUpdate($inputs) {
 
         return $this->validate($inputs, $this->rules_update);
@@ -62,51 +95,4 @@ class Posts extends Model
     }
 
 
-
-/*
-    public function validateCreate($inputs) {
-        $v = Validator::make($inputs, $this->rules_create);
-        if($v->passes()) return true;
-        $this->errors = $v->messages();
-        return false;
-    }
-
-    public function validateUpdate($inputs) {
-        $v = Validator::make($inputs, $this->rules_update);
-        if($v->passes()) return true;
-        $this->errors = $v->messages();
-        return false;
-    }
-
-*/
-
-
-
-
-
-
-/*
-    public function create(Posts $model, $data)
-    {
-
-
-
-
-        $request->  validate([
-            'first_name'=>'required',
-            'last_name'=>'required',
-            'email'=>'required'
-        ]);
-
-        $contact = new Contact([
-            'first_name' => $request->get('first_name'),
-            'last_name' => $request->get('last_name'),
-            'email' => $request->get('email'),
-            'job_title' => $request->get('job_title'),
-            'city' => $request->get('city'),
-            'country' => $request->get('country')
-        ]);
-        $contact->save();
-        return redirect('/contacts')->with('success', 'Contact saved!');
-    }*/
 }

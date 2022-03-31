@@ -3,7 +3,12 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+
+use Symfony\Component\HttpFoundation\Request;
 use Throwable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -32,10 +37,29 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+  /*  public function register()
     {
         $this->reportable(function (Throwable $e) {
             //
         });
+    }*/
+
+    /**
+     *Register the exception handling callbacks for the application.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function register()
+    {
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => 'Not found. 404'
+                ], 404);
+            }
+        });
     }
+
+
+
 }

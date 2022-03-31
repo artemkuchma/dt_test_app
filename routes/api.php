@@ -28,7 +28,6 @@ Route::post('posts', [PostsController::class, 'create']);
 Route::put('posts/{id}', [PostsController::class, 'update']);
 Route::delete('posts/{id}', [PostsController::class, 'destroy']);
 Route::post('upvote/{post_id}', [PostsController::class, 'upvote']);
-//upvote
 
 Route::get('comments/{id}', [PostCommentsController::class, 'show']);
 Route::get('comments', [PostCommentsController::class, 'index']);

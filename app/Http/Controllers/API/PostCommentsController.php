@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class PostCommentsController extends Controller
 {
     /**
-     * Display a listing of the posts.
+     * Display a listing of the all comments.
      *
      * @return \Illuminate\Http\Response
      */
@@ -26,23 +26,15 @@ class PostCommentsController extends Controller
         ]);
     }
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created comment in db.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
     {
-        /*
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'detail' => 'required'
-        ]);
 
-*/
         $model = new PostsComments();
-        //$data = $request->all(); //json_decode($request->all());
 
         if(!$model->validateCreate($request->all())){
             return response()->json([
@@ -51,19 +43,9 @@ class PostCommentsController extends Controller
                 "data" => $model->errors
             ]);
         }
-        /*
-        $model->title = $data['title'];//$request->get('title');
-        $model->author_name = $data['author_name'];//$request->get('author_name');
-        $model->link = $data['link'];// $request->get('link');
 
-        $model->save();*/
-       // $model->created_at = time();
-       // $model->updated_at = time();
         $data = $model->create($request->all());
 
-
-        // $data = $request->all();
-        //$posts = Posts::create($data);
         return response()->json([
             "response" => 201,
             "message" => "Post comment created successfully.",
@@ -71,7 +53,7 @@ class PostCommentsController extends Controller
         ]);
     }
     /**
-     * Display the specified resource.
+     * Display the specified comment.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -94,7 +76,7 @@ class PostCommentsController extends Controller
         ]);
     }
     /**
-     * Update the specified resource in storage.
+     * Update the specified comment in db.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -102,7 +84,7 @@ class PostCommentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = PostsComments::find($id); //DB::table('posts')->find($id);
+        $post = PostsComments::find($id);
         if(!$post){
 
             return response()->json([
@@ -110,7 +92,6 @@ class PostCommentsController extends Controller
                 "message" => "Post comment not found.",
 
             ]);
-
 
         }
         if(!$post->validateUpdate($request->all())){
@@ -131,7 +112,7 @@ class PostCommentsController extends Controller
 
     }
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified comment from db.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -146,7 +127,6 @@ class PostCommentsController extends Controller
 
             ]);
         }
-       // Posts::deleted($id);
         $post->delete();
         return response()->json([
             "response" => 204,

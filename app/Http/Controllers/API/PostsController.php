@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class PostsController extends Controller
 {
     /**
-     * Display a listing of the posts.
+     * Display a listing of the posts (sort by desc) with upvots .
      *
      * @return \Illuminate\Http\Response
      */
@@ -27,7 +27,7 @@ class PostsController extends Controller
     }
 
     /**
-     * Display a listing of the posts.
+     * Display a listing of the posts (sort by desc) with upvots and with comments.
      *
      * @return \Illuminate\Http\Response
      */
@@ -41,23 +41,15 @@ class PostsController extends Controller
         ]);
     }
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created post in db.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
     {
-        /*
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'detail' => 'required'
-        ]);
 
-*/
         $model = new Posts();
-        //$data = $request->all(); //json_decode($request->all());
 
         if(!$model->validateCreate($request->all())){
             return response()->json([
@@ -66,19 +58,9 @@ class PostsController extends Controller
                 "data" => $model->errors
             ]);
         }
-        /*
-        $model->title = $data['title'];//$request->get('title');
-        $model->author_name = $data['author_name'];//$request->get('author_name');
-        $model->link = $data['link'];// $request->get('link');
 
-        $model->save();*/
-       // $model->created_at = time();
-       // $model->updated_at = time();
         $data = $model->create($request->all());
 
-
-        // $data = $request->all();
-        //$posts = Posts::create($data);
         return response()->json([
             "response" => 201,
             "message" => "Post created successfully.",
@@ -86,7 +68,7 @@ class PostsController extends Controller
         ]);
     }
     /**
-     * Display the specified resource.
+     * Display the specified post with upvots.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -110,7 +92,7 @@ class PostsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified post with upvots and comments.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -118,7 +100,7 @@ class PostsController extends Controller
     public function showFromComments($id)
     {
 
-        $post = Posts::with(['comments'])->find($id);//DB::table('posts')->find($id);
+        $post = Posts::with(['upvots'])->with(['comments'])->find($id);//DB::table('posts')->find($id);
         if (is_null($post)) {
             return response()->json([
                 "response" => 404,
@@ -143,7 +125,7 @@ class PostsController extends Controller
 
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified post in db.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -180,7 +162,8 @@ class PostsController extends Controller
 
     }
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified post from db.
+     * Related comments and upvotes will also be removed.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -205,15 +188,15 @@ class PostsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Adding a new or increasing one unit of an existing upvote.
      *
-     * @param  int  $id
+     * @param  int  $post_id
      * @return \Illuminate\Http\Response
      */
     public function upvote($post_id)
     {
 
-        $upvote = PostsUpvote::where('post_id', $post_id)->first();// Posts::find($id);//DB::table('posts')->find($id);
+        $upvote = PostsUpvote::where('post_id', $post_id)->first();
         if (is_null($upvote)) {
             $upvote_new = new PostsUpvote();
             $input = [
@@ -224,7 +207,6 @@ class PostsController extends Controller
                 $upvote_new->post_id = $post_id;
                  $upvote_new->count = 1;
                 $upvote_new->save();
-               // $upvote_new->created($input);
 
                 return response()->json([
                     "response" => 201,
