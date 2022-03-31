@@ -17,8 +17,6 @@ class Posts extends Model
         'author_name',
         'link',
         'date_create'
-       // 'created_at',
-      //  'updated_at',
     ];
 
     protected $rules_update = [
@@ -51,6 +49,16 @@ class Posts extends Model
 
         return $this->validate($inputs, $this->rules_update);
 
+    }
+
+    public function comments()
+    {
+        return $this->hasMany('App\Models\PostsComments', 'post_id');
+    }
+
+    public function upvots()
+    {
+        return $this->hasMany('App\Models\PostsUpvote', 'post_id');
     }
 
 
