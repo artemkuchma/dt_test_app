@@ -31,3 +31,16 @@
    <p> 5) Rename file .env.example to .env</p>
    <p> 6) Run in the console (located in the project folder) the migration of database tables with the following command:</p>
    <code>php artisan migrate</code>
+
+   <h3>Docker</h3>
+
+   <p> The ability to deploy as a docker container </p>
+
+   <p> 1) rename .env.docker to .env</p>
+
+      <p>2) run commands</p>
+      <code>docker-compose build app</code>
+       <code>docker-compose up -d</code>
+        <code>docker-compose exec app composer install</code>
+        <code>docker-compose exec app php artisan key:generate</code>
+       <p>The application will be available at: http://localhost:8000/api/posts</p>
